@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "start-mocked": "node index.js true"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,7 @@
   "homepage": "https://github.com/hulk-devfest2017/rankweb#readme",
   "dependencies": {
     "express": "^4.15.3",
-    "mongodb": "^2.2.29"
+    "mongodb": "^2.2.29",
+    "q": "^1.5.0"
   }
 }
