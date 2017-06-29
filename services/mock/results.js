@@ -8,7 +8,7 @@ module.exports = [{
         "genderMale" : false
     },
     "game" : {
-        "core" : 1000
+        "score" : 1000
     }
 } , {
     "player" : {
@@ -20,6 +20,6 @@ module.exports = [{
         "genderMale" : false
     },
     "game" : {
-        "core" : 990
+        "score" : 990
     }
 }]
