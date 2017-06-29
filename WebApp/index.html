@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <title>SQLI Hulk DevFest Challenge 2018</title>
+        <script type="text/javascript" src="deps/mqtt.min.js"></script> 
+        <script type="text/javascript" src="scripts/app.js"></script>
+        <link rel="stylesheet" href="styles/app.css"/>
+    </head>
+
+    <body>
+        <div id="contentWrapper">
+            <div id="formConfigurationContener">
+                <h3>Configuration</h3>
+                <form action="#" id="formConfiguration" class="display-flex">
+                    <label for="server">Serveur</label> <input type="text" name="hostname" id="hostname" value="localhost"/>
+                    <label for="mqttPort">Port MQTT</label> <input type="text" name="mqttPort" id="mqttPort" value="9001"/>
+                </form>
+            </div>
+            <div id="connectionMessage" hidden>
+                Connexion au serveur MQTT en cours...
+            </div>
+            <div id="resultsTableContener" hidden>
+                <table id="resultsTable" border="1">
+                    <thead>
+                        <th>Classement</th>
+                        <th>Joueur</th>
+                        <th>Score</th>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

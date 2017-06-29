@@ -26,9 +26,9 @@ var HulkChallengeService = require("./services/HulkChallenge.service")
 var hulkChallengeServiceInstance = new HulkChallengeService(Q, mockedMode, constantes);
 
 // Web application ressources
-app.get('/', function (req, res) {
-  res.send('Hello World');
-});
+app.use(Express.static("WebApp", {
+  extensions:["js", "html"]
+}));
 
 
 // Rest ressources
