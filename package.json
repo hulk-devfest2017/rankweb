@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "start-mocked": "node index.js true"
+    "start": "nodejs index.js",
+    "start-mocked": "nodejs index.js true"
   },
   "repository": {
     "type": "git",
