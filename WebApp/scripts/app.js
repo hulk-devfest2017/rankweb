@@ -1,5 +1,55 @@
 var formConfiguration, connectionMessage, resultsTableContener;
-var configuration = {};
+var configuration = {
+    URI_GET_RESULTS : "/v1/hulk-challenge/results"
+};
+
+var gameResults = [];
+
+/**
+ * Functionnal services
+ */
+var hulkService = {
+    /**
+     * Get all results of Hulk challenge
+     * 
+     */
+    getAllResults : function ()  {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", configuration.URI_GET_RESULTS);
+            xhr.send();
+            xhr.onload = () => {
+                var results = JSON.parse(xhr.responseText);
+                console.log("Get all results call OK !");
+                resolve(results);
+            }
+            xhr.onerror = () => {
+                reject("Get results KO : " + xhr.status + " - " + xhr.statusText + " " + xhr.responseText);
+            }
+        });
+    },
+
+    subscribeResultEvent : function() {
+        return new Promise((resolve, reject) => {
+            // TODO -> get all results from API and start MQTT connection
+            const client = mqtt.connect("ws://"+ configuration.hostname + ":" + configuration.mqttPort + "/mqtt");
+
+            // Connect event
+            client.on("connect", function(result) {
+                console.log("MQTT connection OK !");
+                // Start subscribe to the results topic
+                client.subscribe("results");
+                resolve("Subscribe OK");
+            });
+
+            // Error event
+            client.on("error", function(error) {
+                console.log("MQTT Connection Error !", error);
+                reject("MQTT Connection Error : " + JSON.stringify(error));
+            });
+        });
+    }
+}
 
 window.onload = function() {
     // Init selectors
@@ -21,26 +71,22 @@ window.onload = function() {
                 // Check fields OK
                 configuration.hostname = formConfiguration.hostname.value.trim();
                 configuration.mqttPort = formConfiguration.mqttPort.value.trim();
-                console.log(configuration);
 
                 formConfiguration.parentNode.setAttribute("hidden", "");
                 connectionMessage.removeAttribute("hidden");
 
-                // TODO -> get all results from API and the start MQTT connection
-                var client = mqtt.connect("ws://"+ configuration.hostname + ":" + configuration.mqttPort + "/mqtt");
-                
-                // Connect event
-                client.on("connect", function(connack) {
-                    console.log("Connected !");
+                // Get all results from REST Service
+                hulkService.getAllResults().then(function(results) {
+                    gameResults = results;
+                    // Get all results OK -> start subscribing to MQTT result
+                    return hulkService.subscribeResultEvent();
+                }).then(function() {
+                    // Both get results and MQTT subscribe are OK
                     connectionMessage.setAttribute("hidden", "");
-                    resultsTableContener.removeAttribute("hidden", "");
-                    // Start subscribe to the results topic
-                    client.subscribe("results");
-                });
-
-                // Error event
-                client.on("error", function(connack) {
-                    console.log("Connection Error !");
+                    resultsTableContener.removeAttribute("hidden");
+                }).catch(function(error) {
+                    console.log(error);
+                    alert(error);
                 });
             }
         }
