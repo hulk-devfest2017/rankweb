@@ -4,10 +4,11 @@
         <script type="text/javascript" src="deps/mqtt.min.js"></script> 
         <script type="text/javascript" src="scripts/app.js"></script>
         <link rel="stylesheet" href="styles/app.css"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
 
-    <body>
-        <div id="contentWrapper">
+    <body class="full-height">
+        <div id="contentWrapper" class="flex-container">
             <div id="formConfigurationContener">
                 <h3>Configuration</h3>
                 <form action="#" id="formConfiguration" class="display-flex">
@@ -18,14 +19,15 @@
             <div id="connectionMessage" hidden>
                 Connexion au serveur MQTT et récupération des résultats en cours...
             </div>
-            <div id="resultsTableContener" hidden>
-                <table id="resultsTable" border="1">
+            <div class="flex-container align-center flex-column hidden" id="resultsTableContainer">
+                <h3>SQLI Hulk Challenge - DevFest 2017</h3>
+                <table border="1">
                     <thead>
                         <th>Classement</th>
                         <th>Joueur</th>
                         <th>Score</th>
                     </thead>
-                    <tbody>
+                    <tbody id="resultsTableContent">
                         
                     </tbody>
                 </table>

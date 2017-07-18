@@ -1,6 +1,7 @@
-var formConfiguration, connectionMessage, resultsTableContener;
+var formConfiguration, connectionMessage, resultsTableContainer, resultsTableContent;
 var configuration = {
-    URI_GET_RESULTS : "/v1/hulk-challenge/results"
+    URI_GET_RESULTS : "/v1/hulk-challenge/results",
+    RESULTS_TOPIC : "results"
 };
 
 var gameResults = [];
@@ -42,7 +43,7 @@ var hulkService = {
             client.on("connect", function(result) {
                 console.log("MQTT connection OK !");
                 // Start subscribe to the results topic
-                client.subscribe("results");
+                client.subscribe(configuration.RESULTS_TOPIC);
                 resolve("Subscribe OK");
             });
 
@@ -51,6 +52,40 @@ var hulkService = {
                 console.log("MQTT Connection Error !", error);
                 reject("MQTT Connection Error : " + JSON.stringify(error));
             });
+
+            // New message event
+            client.on('message', function (topic, message) {
+                // message is Buffer
+                console.log(topic, message.toString());
+                if (configuration.RESULTS_TOPIC === topic) {
+                    gameResults.push(JSON.parse(message.toString()));
+                    htmlUtils.updateResults();
+                }
+            });
+        });
+    }
+}
+
+/**
+ * Utils function for HTML
+ */
+var htmlUtils = {
+    /**
+     * Update the table of results
+     */
+    updateResults : function() {
+        // Sort by score
+        gameResults.sort(function(result, nextResult) {
+            return result.game.score <= nextResult.game.score;
+        });
+        resultsTableContent.innerHTML = "";
+        // Print result
+        gameResults.forEach(function(result) {
+            var newLine = document.createElement("tr");
+            newLine.innerHTML = "<td>" + 0 + "</td>";
+            newLine.innerHTML += "<td>" + result.player.firstName + " " + result.player.lastName + "</td>";
+            newLine.innerHTML += "<td>" + result.game.score + "</td>";
+            resultsTableContent.append(newLine);
         });
     }
 }
@@ -59,7 +94,8 @@ window.onload = function() {
     // Init selectors
     formConfiguration = document.querySelector("#formConfiguration");
     connectionMessage = document.querySelector("#connectionMessage");
-    resultsTableContener = document.querySelector("#resultsTableContener");
+    resultsTableContainer = document.querySelector("#resultsTableContainer");
+    resultsTableContent = document.querySelector("#resultsTableContent");
 
     // Keypress event on configuration form
     formConfiguration.addEventListener("keypress", function(e) {
@@ -86,8 +122,9 @@ window.onload = function() {
                     return hulkService.subscribeResultEvent();
                 }).then(function() {
                     // Both get results and MQTT subscribe are OK
+                    htmlUtils.updateResults();
                     connectionMessage.setAttribute("hidden", "");
-                    resultsTableContener.removeAttribute("hidden");
+                    resultsTableContainer.classList.remove("hidden");
                 }).catch(function(error) {
                     console.log(error);
                     alert(error);
