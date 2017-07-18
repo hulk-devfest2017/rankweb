@@ -11,7 +11,7 @@ var gameResults = [];
 var hulkService = {
     /**
      * Get all results of Hulk challenge
-     * 
+     * @return Promise<[]>
      */
     getAllResults : function ()  {
         return new Promise((resolve, reject) => {
@@ -29,6 +29,10 @@ var hulkService = {
         });
     },
 
+    /**
+     * Subscribe to result MQTT queue
+     * @return Promise<>
+     */
     subscribeResultEvent : function() {
         return new Promise((resolve, reject) => {
             // TODO -> get all results from API and start MQTT connection
